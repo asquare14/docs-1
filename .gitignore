@@ -19,6 +19,11 @@ $RECYCLE.BIN/
 # Generated files
 content/docs/tools/pack/cli/pack*
 
+# Hugo
+.hugo_build.lock
+
 # Tools
 /bin
 /tmp
+
+/tools/bin

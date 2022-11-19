@@ -3,7 +3,9 @@ title="Environment variables"
 weight=3
 summary="Environment variables are a common way to configure various buildpacks at build-time."
 +++
-
+<!--+- `
+# Environment variables
+`+-->
 Environment variables are a common way to configure various buildpacks at build-time.
 
 Below are a few ways you can do so. All of them will use our [samples][samples] repo for simplicity.
@@ -16,14 +18,15 @@ The `--env` parameter must be one of the following:
 - `VARIABLE`, where the value of `VARIABLE` will be taken from the local environment
 
 ##### Example:
-```bash
-# clone the repo
-git clone https://github.com/buildpacks/samples
 
-# set an environment variable
+1. Set an environment variable
+```
 export FOO=BAR
+```
+<!--+- "{{execute}}"+-->
 
-# build the app
+2. Build the app
+```
 pack build sample-app \
     --env "HELLO=WORLD" \
     --env "FOO" \
@@ -31,10 +34,14 @@ pack build sample-app \
     --buildpack  samples/buildpacks/hello-world/ \
     --buildpack samples/apps/bash-script/bash-script-buildpack/ \
     --path  samples/apps/bash-script/
+```
+<!--+- "{{execute}}"+-->
 
-# run the app
+3. Run the app
+```
 docker run sample-app
 ```
+<!--+- "{{execute}}"+-->
 
 The following environment variables were set and available to buildpacks at build-time:
 
@@ -52,27 +59,35 @@ The `--env-file` parameter must be a path to a file where each line is one of th
 - `VARIABLE`, where the value of `VARIABLE` will be taken from the current environment
 
 ##### Example:
-```bash
-# clone the repo
-git clone https://github.com/buildpacks/samples
 
-# set an environment variable
+1. Set an environment variable
+```
 export FOO=BAR
+```
+<!--+- "{{execute}}"+-->
 
-# create an env file
+2. Create an env file
+```
 echo -en "HELLO=WORLD\nFOO" > ./envfile
+```
+<!--+- "{{execute}}"+-->
 
-# build the app
+3. Build the app
+```
 pack build sample-app \
     --env-file ./envfile \
     --builder cnbs/sample-builder:bionic \
     --buildpack  samples/buildpacks/hello-world/ \
     --buildpack samples/apps/bash-script/bash-script-buildpack/ \
     --path  samples/apps/bash-script/
+```
+<!--+- "{{execute}}"+-->
 
-# run the app
+4. Run the app
+```
 docker run sample-app
 ```
+<!--+- "{{execute}}"+-->
 
 The following environment variables were set and available to buildpacks at build-time:
 
@@ -81,36 +96,44 @@ The following environment variables were set and available to buildpacks at buil
 | `HELLO` | `WORLD` | _hard-coded value in file_ |
 | `FOO`   | `BAR`   | _current environment_      |
 
-<p class="spacer"></p>
+
 
 > **NOTE:** Variables defined using `--env` take precedence over variables defined in `--env-file`.
 
 ### Using Project Descriptor
 The `--descriptor` parameter must be a path to a file which follows the project.toml [schema][descriptor-schema].
+Without the `--descriptor` flag, `pack build` will use the `project.toml` file in the application directory if it exists.
 You can define environment variables in an `env` table in the file, and pass those into the application.
 
 ##### Example:
-```bash
-# clone the repo
-git clone https://github.com/buildpacks/samples
 
-# Add an environment variable to the project.toml
+1. Add an environment variable to the project.toml
+
+```
 cat >> samples/apps/bash-script/project.toml <<EOL
+
 [[build.env]]
 name="HELLO"
 value="WORLD"
 EOL
+```
+<!--+- "{{execute}}"+-->
 
-# build the app
+2. Build the app
+```
 pack build sample-app \
     --builder cnbs/sample-builder:bionic \
     --buildpack  samples/buildpacks/hello-world/ \
     --buildpack samples/apps/bash-script/bash-script-buildpack/ \
     --path  samples/apps/bash-script/
+```
+<!--+- "{{execute}}"+-->
 
-# run the app
+3. Run the app
+```
 docker run sample-app
 ```
+<!--+- "{{execute}}"+-->
 
 The following environment variables were set and available to buildpacks at build-time:
 
@@ -118,7 +141,6 @@ The following environment variables were set and available to buildpacks at buil
 |---------|---------|----------------------------|
 | `HELLO` | `WORLD` | _hard-coded value in file_ |
 
-<p class="spacer"></p>
 
 > **NOTE:** Variables defined using `--env` or `--env-file` take precedence over variables defined in the `project.toml`.
 

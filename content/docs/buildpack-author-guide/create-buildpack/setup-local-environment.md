@@ -9,6 +9,7 @@ weight=401
 <!--
 ```bash
 docker rmi test-ruby-app
+pack config trusted-builders add cnbs/sample-builder:bionic
 ```
 -->
 
@@ -25,8 +26,9 @@ First, we'll create a sample Ruby app that you can use when developing your buil
 ```bash
 mkdir ruby-sample-app
 ```
+<!--+- "{{execute}}"+-->
 
-Create a file in the current directory called `ruby-sample-app/app.rb` with the following contents:
+Create a file in the current directory called `ruby-sample-app/app.rb`<!--+"{{open}}"+--> with the following contents:
 
 <!-- test:file=ruby-sample-app/app.rb -->
 ```ruby
@@ -40,7 +42,7 @@ get '/' do
 end
 ```
 
-Then, create a file called `ruby-sample-app/Gemfile` with the following contents:
+Then, create a file called `ruby-sample-app/Gemfile`<!--+"{{open}}"+--> with the following contents:
 
 <!-- test:file=ruby-sample-app/Gemfile -->
 ```ruby
@@ -57,30 +59,34 @@ Finally, make sure your local Docker daemon is running by executing:
 ```bash
 docker version
 ```
+<!--+- "{{execute}}"+-->
 
 If you see output similar to the following, you're good to go! Otherwise, start Docker and check again.
 
 ```
 Client: Docker Engine - Community
- Version:           18.09.2
- API version:       1.39
- Go version:        go1.10.8
- Git commit:        6247962
- Built:             Sun Feb 10 04:12:39 2019
- OS/Arch:           darwin/amd64
- Experimental:      false
+ Version:           20.10.9
+ API version:       1.41
+ Go version:        go1.16.8
+ Git commit:        c2ea9bc
+ Built:             Mon Oct  4 16:08:29 2021
+ OS/Arch:           linux/amd64
+ Context:           default
+ Experimental:      true
 
 Server: Docker Engine - Community
  Engine:
-  Version:          18.09.2
-  API version:      1.39 (minimum version 1.12)
-  Go version:       go1.10.6
-  Git commit:       6247962
-  Built:            Sun Feb 10 04:13:06 2019
+  Version:          20.10.9
+  API version:      1.41 (minimum version 1.12)
+  Go version:       go1.16.8
+  Git commit:       79ea9d3
+  Built:            Mon Oct  4 16:06:34 2021
   OS/Arch:          linux/amd64
-  Experimental:     true
+  Experimental:     false
 ```
 
+<!--+ if false +-->
 ---
 
 <a href="/docs/buildpack-author-guide/create-buildpack/building-blocks-cnb" class="button bg-pink">Next Step</a>
+<!--+ end+-->

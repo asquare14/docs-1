@@ -7,20 +7,22 @@ weight=405
 
 To make your app runnable, a default start command must be set. You'll need to add the following to the end of your `build` script:
 
+<!-- file=ruby-buildpack/bin/build data-target=append -->
 ```bash
 # ...
 
 # Set default start command
-cat > "$layersdir/launch.toml" <<EOL
+cat > "$layersdir/launch.toml" << EOL
 [[processes]]
 type = "web"
 command = "bundle exec ruby app.rb"
+default = true
 EOL
 
 # ...
 ```
 
-Your full `ruby-buildpack/bin/build` script should now look like the following:
+Your full `ruby-buildpack/bin/build`<!--+"{{open}}"+--> script should now look like the following:
 
 <!-- test:file=ruby-buildpack/bin/build -->
 ```bash
@@ -42,7 +44,7 @@ ruby_url=https://s3-external-1.amazonaws.com/heroku-buildpack-ruby/heroku-18/rub
 wget -q -O - "$ruby_url" | tar -xzf - -C "$rubylayer"
 
 # 4. MAKE RUBY AVAILABLE DURING LAUNCH
-echo -e 'launch = true' > "$layersdir/ruby.toml"
+echo -e '[types]\nlaunch = true' > "$layersdir/ruby.toml"
 
 # 5. MAKE RUBY AVAILABLE TO THIS SCRIPT
 export PATH="$rubylayer"/bin:$PATH
@@ -58,10 +60,11 @@ bundle install
 
 # ========== ADDED ===========
 # 8. SET DEFAULT START COMMAND
-cat > "$layersdir/launch.toml" <<EOL
+cat > "$layersdir/launch.toml" << EOL
 [[processes]]
 type = "web"
 command = "bundle exec ruby app.rb"
+default = true
 EOL
 ```
 
@@ -71,12 +74,14 @@ Then rebuild your app using the updated buildpack:
 ```bash
 pack build test-ruby-app --path ./ruby-sample-app --buildpack ./ruby-buildpack
 ```
+<!--+- "{{execute}}"+-->
 
 You should then be able to run your new Ruby app:
- 
+
 ```bash
 docker run --rm -p 8080:8080 test-ruby-app
 ```
+<!--+- "{{execute}}"+-->
 
 and see the server log output:
 
@@ -91,6 +96,8 @@ Test it out by navigating to [localhost:8080](http://localhost:8080) in your fav
 
 We can add multiple process types to a single app. We'll do that in the next section.
 
+<!--+if false+-->
 ---
 
 <a href="/docs/buildpack-author-guide/create-buildpack/specify-multiple-process-types" class="button bg-pink">Next Step</a>
+<!--+end+-->

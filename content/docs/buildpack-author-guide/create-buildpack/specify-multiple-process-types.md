@@ -7,7 +7,7 @@ weight=406
 
 One of the benefits of buildpacks is that they are multi-process - an image can have multiple entrypoints for each operational mode. Let's see how this works. We will extend our app to have a worker process.
 
-Let's create a worker file, `ruby-sample-app/worker.rb`, with the following contents:
+Let's create a worker file, `ruby-sample-app/worker.rb`<!--+"{{open}}"+-->, with the following contents:
 
 <!-- test:file=ruby-sample-app/worker.rb -->
 ```ruby
@@ -16,18 +16,19 @@ for i in 0..5
 end
 ```
 
-After building our app, we could run the resulting image with the `web` process (currently the default) or our new worker process. 
+After building our app, we could run the resulting image with the `web` process (currently the default) or our new worker process.
 
 To enable running the worker process, we'll need to have our buildpack define a "process type" for the worker.  Modify the section where processes are defined to:
 
 ```bash
 # ...
 
-cat > "$layersdir/launch.toml" <<EOL
+cat > "$layersdir/launch.toml" << EOL
 # our web process
 [[processes]]
 type = "web"
 command = "bundle exec ruby app.rb"
+default = true
 
 # our worker process
 [[processes]]
@@ -38,7 +39,7 @@ EOL
 # ...
 ```
 
-Your full `ruby-buildpack/bin/build` script should now look like the following:
+Your full `ruby-buildpack/bin/build`<!--+"{{open}}"+--> script should now look like the following:
 
 <!-- test:file=ruby-buildpack/bin/build -->
 ```bash
@@ -60,7 +61,7 @@ ruby_url=https://s3-external-1.amazonaws.com/heroku-buildpack-ruby/heroku-18/rub
 wget -q -O - "$ruby_url" | tar -xzf - -C "$rubylayer"
 
 # 4. MAKE RUBY AVAILABLE DURING LAUNCH
-echo -e 'launch = true' > "$layersdir/ruby.toml"
+echo -e '[types]\nlaunch = true' > "$layersdir/ruby.toml"
 
 # 5. MAKE RUBY AVAILABLE TO THIS SCRIPT
 export PATH="$rubylayer"/bin:$PATH
@@ -76,11 +77,12 @@ bundle install
 
 # ========== MODIFIED ===========
 # 8. SET DEFAULT START COMMAND
-cat > "$layersdir/launch.toml" <<EOL
+cat > "$layersdir/launch.toml" << EOL
 # our web process
 [[processes]]
 type = "web"
 command = "bundle exec ruby app.rb"
+default = true
 
 # our worker process
 [[processes]]
@@ -95,6 +97,7 @@ Now if you rebuild your app using the updated buildpack:
 ```bash
 pack build test-ruby-app --path ./ruby-sample-app --buildpack ./ruby-buildpack
 ```
+<!--+- "{{execute}}"+-->
 
 You should then be able to run your new Ruby worker process:
 
@@ -102,6 +105,7 @@ You should then be able to run your new Ruby worker process:
 ```bash
 docker run --rm --entrypoint worker test-ruby-app
 ```
+<!--+- "{{execute}}"+-->
 
 and see the worker log output:
 
@@ -117,6 +121,8 @@ Running a worker task...
 
 Next, we'll look at how to improve our buildpack by leveraging cache.
 
+<!--+if false+-->
 ---
 
 <a href="/docs/buildpack-author-guide/create-buildpack/caching" class="button bg-pink">Next Step</a>
+<!--+end+-->

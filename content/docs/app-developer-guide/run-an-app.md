@@ -4,31 +4,36 @@ weight=5
 summary="Learn how to specify the launch process for an app."
 +++
 
+<!--+- `
+# Specify launch process
+
+Learn how to specify the launch process for an app.
+`+-->
+
 ### Build a multi-process app
 
-For this example we will use the `hello-processes` buildpack from our [samples][samples] repo.
+For this example we will use the `hello-processes` buildpack from our [samples][samples] repo so make sure you have it cloned locally.
 
-```bash
-# clone the repo
-git clone https://github.com/buildpacks/samples
-
-# build the app
+Let's build the app.
+```
 pack build multi-process-app \
     --builder cnbs/sample-builder:alpine \
     --buildpack samples/java-maven \
     --buildpack samples/buildpacks/hello-processes/ \
     --path samples/apps/java-maven/
 ```
+<!--+- "{{execute}}"+-->
 
 If you inspect the app image with `pack`, you will see multiple process types defined:
 
-```bash
+```
 pack inspect-image multi-process-app
 ```
+<!--+- "{{execute}}"+-->
 
 The output should look similar to the below:
 
-```bash
+```
 Inspecting image: multi-process-app
 
 REMOTE:
@@ -69,58 +74,76 @@ The `launcher` will source any profile scripts (for `non-direct` processes) and 
 
 If you would like to run the default process, you can simply run the app image without any additional arguments:
 
-```bash
+```
 docker run --rm -p 8080:8080 multi-process-app
 ```
+<!--+- "{{execute}}"+-->
 
 #### Default process type with additional arguments
 
 If you would like to pass additional arguments to the default process, you can run the app image with the arguments specified in the command:
 
-```bash
+```
 docker run --rm -p 8080:8080 multi-process-app --spring.profiles.active=mysql
 ```
+<!--+- "{{execute interrupt}}"+-->
 
 #### Non-default process-type
 
 To run a non-default process type, set the process type as the entrypoint for the run container:
 
-```bash
+```
 docker run --rm --entrypoint sys-info multi-process-app
 ```
+<!--+- "{{execute interrupt}}"+-->
 
 #### Non-default process-type with additional arguments
 
 You can pass additional arguments to a non-default process type:
 
-```bash
+```
 docker run --rm --entrypoint sys-info multi-process-app --spring.profiles.active=mysql
 ```
+<!--+- "{{execute interrupt}}"+-->
 
 #### User-provided shell process
 
 You can even override the buildpack-defined process types:
 
-```bash
+```
 docker run --rm --entrypoint launcher -it multi-process-app bash
+```
+<!--+- "{{execute interrupt}}"+-->
+
+Now let's exit this shell and run an alternative entrypoint - 
+```
+exit
+```
+<!--+- "{{execute interrupt}}"+-->
+```
 docker run --rm --entrypoint launcher -it multi-process-app echo hello "$WORLD" # $WORLD is evaluated on the host machine
+```
+<!--+- "{{execute interrupt}}"+-->
+```
 docker run --rm --entrypoint launcher -it multi-process-app echo hello '$WORLD' # $WORLD is evaluated in the container after profile scripts are sourced
 ```
+<!--+- "{{execute interrupt}}"+-->
 
 #### User-provided shell process with bash script
 
 An entire script may be provided as a single argument:
 
-```bash
+```
 docker run --rm --entrypoint launcher -it multi-process-app 'for opt in $JAVA_OPTS; do echo $opt; done'
 ```
+<!--+- "{{execute interrupt}}"+-->
 
 #### User-provided direct process
 
 By passing `--` before the command, we instruct the `launcher` to start the provided process without `bash`.
 Note that while buildpack-provided environment variables will be set in the execution environment, no profile scripts will be sourced (as these require `bash`):
 
-```bash
+```
 docker run --rm --entrypoint launcher multi-process-app -- env # output will include buildpack-provided env vars
 docker run --rm --entrypoint launcher multi-process-app -- echo hello "$WORLD" # $WORLD is evaluated on the host machine
 docker run --rm --entrypoint launcher multi-process-app -- echo hello '$WORLD' # $WORLD is not evaluated, output will include string literal `$WORLD`
@@ -130,9 +153,10 @@ docker run --rm --entrypoint launcher multi-process-app -- echo hello '$WORLD' #
 
 You can bypass the launcher entirely by setting a new entrypoint for the run container:
 
-```bash
+```
 docker run --rm --entrypoint bash -it multi-process-app # profile scripts have NOT been sourced and buildpack-provided env vars are NOT set in this shell
 ```
+<!--+- "{{execute interrupt}}"+-->
 
 To learn more about the launcher, see the [platform spec](https://github.com/buildpacks/spec/blob/main/platform.md#launcher).
 

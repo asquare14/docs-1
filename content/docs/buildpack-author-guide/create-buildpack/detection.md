@@ -5,7 +5,7 @@ weight=403
 
 <!-- test:suite=create-buildpack;weight=3 -->
 
-Next, you will want to actually detect that the app your are building is a Ruby app. In order to do this, you will need to check for a `Gemfile`.
+Next, you will want to actually detect that the app you are building is a Ruby app. In order to do this, you will need to check for a `Gemfile`.
 
 Replace `exit 1` in the `detect` script with the following check:
 
@@ -15,7 +15,7 @@ if [[ ! -f Gemfile ]]; then
 fi
 ```
 
-Your `ruby-buildpack/bin/detect` script should look like this:
+Your `ruby-buildpack/bin/detect`<!--+"{{open}}"+--> script should look like this:
 
 <!-- test:file=ruby-buildpack/bin/detect -->
 ```bash
@@ -33,25 +33,27 @@ Next, rebuild your app with the updated buildpack:
 ```bash
 pack build test-ruby-app --path ./ruby-sample-app --buildpack ./ruby-buildpack
 ```
+<!--+- "{{execute}}"+-->
 
 You should see the following output:
 
-<!-- test:assert=contains -->
 ```
+Previous image with name "test-ruby-app" not found
 ===> DETECTING
-[detector] examples/ruby 0.0.1
-===> ANALYZING
-[analyzer] Previous image with name "test-ruby-app" not found
+examples/ruby 0.0.1
 ===> RESTORING
 ===> BUILDING
-[builder] ---> Ruby Buildpack
-[builder] ERROR: failed to build: exit status 1
+---> Ruby Buildpack
+ERROR: failed to build: exit status 1
+ERROR: failed to build: executing lifecycle: failed with status code: 51
 ```
 
 Notice that `detect` now passes because there is a valid `Gemfile` in the Ruby app at `ruby-sample-app`, but now `build` fails because it is currently written to error out.
 
-You will also notice that `ANALYZING` now appears in the build output. This steps is part of the buildpack lifecycle that looks to see if any previous image builds have layers that the buildpack can re-use. We will get into this topic in more detail later.
+You will also notice that `ANALYZING` now appears in the build output. This step is part of the buildpack lifecycle that looks to see if any previous image builds have layers that the buildpack can re-use. We will get into this topic in more detail later.
 
+<!--+if false+-->
 ---
 
 <a href="/docs/buildpack-author-guide/create-buildpack/build-app" class="button bg-pink">Next Step</a>
+<!--+end+-->

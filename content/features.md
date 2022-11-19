@@ -10,9 +10,13 @@ summary="Cloud Native Buildpacks provide a unique solution to the image build pr
 {{< feature title="Advanced Caching" align="right" >}}
 Robust caching is used to improve performance.
 {{</>}}
+
+{{< feature title="Auto-detection" align="right" >}}
+Images can be built directly from application source without additional instructions.
+{{</>}}
   
 {{< feature title="Bill-of-Materials" >}}
-Insights into the contents of the app image.
+Insights into the contents of the app image through standard build-time SBOMs in <a href="https://cyclonedx.org/">CycloneDX</a>, <a href="https://spdx.dev/">SPDX</a> and <a href="https://github.com/anchore/syft">Syft JSON</a> formats.
 {{</>}}
 
 {{< feature title="Modular / Pluggable" >}}

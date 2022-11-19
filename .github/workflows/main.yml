@@ -16,9 +16,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Go environment
-        uses: actions/setup-go@v2.1.3
+        uses: actions/setup-go@v3
         with:
           go-version: '1.x'
       - name: Install Dependencies
@@ -34,8 +34,11 @@ jobs:
       - name: Check links
         run: |
           make check-links
+      - name: Check katacoda
+        run: |
+          make check-katacoda
       - name: Upload public folder
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -48,9 +51,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download public folder
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v3
         with:
           name: public
+          path: ./public
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:

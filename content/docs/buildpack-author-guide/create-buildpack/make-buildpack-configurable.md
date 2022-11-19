@@ -63,7 +63,7 @@ ruby_url=https://s3-external-1.amazonaws.com/heroku-buildpack-ruby/heroku-18/rub
 wget -q -O - "$ruby_url" | tar -xzf - -C "$rubylayer"
 
 # 4. MAKE RUBY AVAILABLE DURING LAUNCH
-echo -e 'launch = true' > "$layersdir/ruby.toml"
+echo -e '[types]\nlaunch = true' > "$layersdir/ruby.toml"
 
 # 5. MAKE RUBY AVAILABLE TO THIS SCRIPT
 export PATH="$rubylayer"/bin:$PATH
@@ -76,8 +76,10 @@ gem install bundler --no-ri --no-rdoc
 # 7. INSTALL GEMS
 # Compares previous Gemfile.lock checksum to the current Gemfile.lock
 bundlerlayer="$layersdir/bundler"
-local_bundler_checksum=$((sha256sum Gemfile.lock >/dev/null 2>&1 || echo 'DOES_NOT_EXIST') | cut -d ' ' -f 1)
+local_bundler_checksum=$((sha256sum Gemfile.lock || echo 'DOES_NOT_EXIST') | cut -d ' ' -f 1)
 remote_bundler_checksum=$(cat "$layersdir/bundler.toml" | yj -t | jq -r .metadata.checksum 2>/dev/null || echo 'DOES_NOT_EXIST')
+# Always set the types table so that we re-use the appropriate layers
+echo -e '[types]\ncache = true\nlaunch = true' >> "$layersdir/bundler.toml"
 
 if [[ -f Gemfile.lock && $local_bundler_checksum == $remote_bundler_checksum ]] ; then
     # Determine if no gem dependencies have changed, so it can reuse existing gems without running bundle install
@@ -88,10 +90,7 @@ else
     # Determine if there has been a gem dependency change and install new gems to the bundler layer; re-using existing and un-changed gems
     echo "---> Installing gems"
     mkdir -p "$bundlerlayer"
-    cat > "$layersdir/bundler.toml" <<EOL
-cache = true
-launch = true
-
+    cat >> "$layersdir/bundler.toml" << EOL
 [metadata]
 checksum = "$local_bundler_checksum"
 EOL
@@ -100,11 +99,12 @@ EOL
 fi
 
 # 8. SET DEFAULT START COMMAND
-cat > "$layersdir/launch.toml" <<EOL
+cat > "$layersdir/launch.toml" << EOL
 # our web process
 [[processes]]
 type = "web"
 command = "bundle exec ruby app.rb"
+default = true
 
 # our worker process
 [[processes]]
@@ -126,18 +126,21 @@ Now when you run:
 ```bash
 pack build test-ruby-app --path ./ruby-sample-app --buildpack ./ruby-buildpack
 ```
+<!--+- "{{execute}}"+-->
 
 You will notice that version of Ruby specified in the app's `.ruby-version` file is downloaded.
 
 <!-- test:assert=contains -->
 ```text
 ===> BUILDING
-[builder] ---> Ruby Buildpack
-[builder] ---> Downloading and extracting Ruby 2.5.0
+---> Ruby Buildpack
+---> Downloading and extracting Ruby 2.5.0
 ```
 
 Next, let's see how buildpacks can store information about the dependencies provided in the output app image for introspection.
 
+<!--+if false+-->
 ---
 
 <a href="/docs/buildpack-author-guide/create-buildpack/adding-bill-of-materials" class="button bg-pink">Next Step</a>
+<!--+end+-->
