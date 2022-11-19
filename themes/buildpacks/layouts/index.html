@@ -1,36 +1,57 @@
 {{ define "main" }}
 
-<div class="well">
-  <section class="container hero">
-    <h1 class="px-4">
-      <span class="text-pink">Buildpacks</span> are pluggable, modular tools that translate source code into OCI images.
-    </h1>
-    <p class="button-holder">
-      <a href="#learn-more" class="bg-pink button">Learn More</a>
-      <a href="https://www.cncf.io/blog/2018/10/03/cncf-to-host-cloud-native-buildpacks-in-the-sandbox">Read the Announcement</a>
-    </p>
-  </section>
+<div class="hero">
+  <div class="well bg-transparent">
+    <section class="container">
+      <h2 class="px-4">
+        <span class="strong">Cloud Native Buildpacks</span><br/> transform your application source code into images that can run on any cloud.
+      </h2>
+      <p class="button-holder">
+        <a href="/docs/" class="bg-pink button">Get Started</a>
+      </p>
+    </section>
+  </div>
 </div>
 
 <div id="learn-more" class="container content pt-5 pb-4">
-  <h2>What Are Buildpacks?</h2>
+  <h2>Why Cloud Native Buildpacks?</h2>
+  <section class="row highlights text-center mb-2">
+    <div class="col-sm bg-light m-2 p-5 rounded">
+      <h3 class="mb-0">Control</h3>
+      <div class="px-5 py-4">
+        {{ readFile "themes/buildpacks/static/images/handshake.svg" | safeHTML }}
+      </div>
+      <p>Balanced control between App Devs and Operators.</p>
+    </div>
+    <div class="col-sm bg-light m-2 p-5 rounded">
+      <h3 class="mb-0">Compliance</h3>
+      <div class="px-5 py-4">
+        {{ readFile "themes/buildpacks/static/images/clipboard.svg" | safeHTML }}
+      </div>
+      <p>Ensure apps meet security and compliance requirements.</p>
+    </div>
+    <div class="col-sm bg-light m-2 p-5 rounded">
+      <h3 class="mb-0">Maintainability</h3>
+      <div class="px-5 py-4">
+        {{ readFile "themes/buildpacks/static/images/upgrade.svg" | safeHTML }}
+      </div>
+      <p>Perform upgrades with minimal effort and intervention.</p>
+    </div>
+  </section>
+  <div class="text-right mb-4">
+    <a href="/features">See list of features</a>
+  </div>
 
+  <h2>About the Project</h2>
   <section class="row">
     <div class="col-sm">
-      <p>Buildpacks provide a higher-level abstraction for building apps compared to Dockerfiles.</p>
+      <p><strong>Buildpacks</strong> were first conceived by Heroku in 2011. Since then, they have been adopted by Cloud Foundry and other PaaS such as Google App Engine, Gitlab, Knative, Deis, Dokku, and Drie.</p>
 
-      <p>Specifically, buildpacks:</p>
-      <ul>
-        <li>Provide a balance of control that reduces the operational burden on developers and supports enterprise operators who manage apps at scale.</li>
-        <li>Ensure that apps meet security and compliance requirements without developer intervention.</li>
-        <li>Provide automated delivery of both OS-level and application-level dependency upgrades, efficiently handling day-2 app operations that are often difficult to manage with Dockerfiles.</li>
-        <li>Rely on compatibility guarantees to safely apply patches without rebuilding artifacts and without unintentionally changing application behavior.</li>
-      </ul>
-    </div>
-    <div class="col-sm">
-      <p>Buildpacks were first conceived by Heroku in 2011. Since then, they have been adopted by Cloud Foundry and other PaaS such as Gitlab, Knative, Deis, Dokku, and Drie.</p>
+      <div class="text-center mb-4">
+        <img src="/images/history.png" alt="Buildpacks history" />
+      </div>
 
-      <p>The <b>Cloud Native Buildpacks</b> project was initiated by Pivotal and Heroku in January 2018 and joined the <a href="https://www.cncf.io/">Cloud Native Sandbox</a> in October 2018. The project aims to unify the buildpack ecosystems with a <a href="https://github.com/buildpacks/spec/blob/master/buildpack.md" target="blank">platform-to-buildpack contract</a> that is well-defined and that incorporates learnings from maintaining production-grade buildpacks for years at both Pivotal and Heroku.</p>
+      <p>The <b>Cloud Native Buildpacks</b> project was initiated by Pivotal and Heroku in January 2018 and joined the <a href="https://www.cncf.io/">Cloud Native Computing Foundation</a> in October 2018. The project aims to unify the buildpack ecosystems with a <a href="https://github.com/buildpacks/spec/blob/main/buildpack.md" target="_blank" rel="noopener noreferrer">platform-to-buildpack contract</a> that is well-defined and that incorporates learnings from maintaining production-grade buildpacks for years at both Pivotal and Heroku.</p>
 
       <p>Cloud Native Buildpacks embrace modern container standards, such as the OCI image format. They take advantage of the latest capabilities of these standards, such as cross-repository blob mounting and image layer "rebasing" on Docker API v2 registries.</p>
     </div>
@@ -42,11 +63,11 @@
     <p class="h2">Getting Started</p>
     <p>The fastest way to try Cloud Native Buildpacks is via the <code class="highlight">pack</code> CLI.</p>
 
-    Try out our tutorial to get started quickly!</p>
+    <p>Try out our tutorial to get started quickly!</p>
 
     <p>
       <a href="/docs/app-journey" class="button bg-pink">Start Tutorial</a>
-      <a href="/docs/" class="button bg-white btn-light">Read the Docs</a>
+      <a href="/docs/" class="button bg-white button-light">Read the Docs</a>
     </p>
   </section>
 </div>

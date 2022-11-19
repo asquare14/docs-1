@@ -25,29 +25,28 @@ First, let's create a [builder configuration file][builder-config] (`builder.tom
 ```toml
 # Buildpacks to include in builder
 [[buildpacks]]
-uri = "samples/buildpacks/hello-moon"
-
-[[buildpacks]]
 uri = "samples/buildpacks/hello-processes"
 
 [[buildpacks]]
-uri = "samples/buildpacks/hello-world"
+# Packaged buildpacks to include in builder;
+# the "hello-universe" package contains the "hello-world" and "hello-moon" buildpacks
+image = "cnbs/sample-package:hello-universe"
 
 # Order used for detection
 [[order]]
     # This buildpack will display build-time information (as a dependency)
     [[order.group]]
-    id = "io.buildpacks.samples.hello-world"
+    id = "samples/hello-world"
     version = "0.0.1"
 
     # This buildpack will display build-time information (as a dependant)
     [[order.group]]
-    id = "io.buildpacks.samples.hello-moon"
+    id = "samples/hello-moon"
     version = "0.0.1"
 
     # This buildpack will create a process type "sys-info" to display runtime information
     [[order.group]]
-    id = "io.buildpacks.samples.hello-processes"
+    id = "samples/hello-processes"
     version = "0.0.1"
 
 # Stack that will be used by the builder
@@ -65,10 +64,10 @@ Creating a builder is now as simple as running the following command:
 
 ```bash
 # create builder
-pack create-builder my-builder:bionic --builder-config ./builder.toml
+pack builder create my-builder:bionic --config ./builder.toml
 ```
 
-> **Tip:** `create-builder` has a `--publish` flag that can be used to publish the generated builder image to a registry.
+> **TIP:** `builder create` has a `--publish` flag that can be used to publish the generated builder image to a registry.
 
 **Congratulations!** You've got a custom builder.
 
@@ -84,10 +83,10 @@ pack build my-app --builder my-builder:bionic --path samples/apps/java-maven/
 
 Remember that we mentioned that the buildpacks we used as part of this builder don't really do much. To be honest, they
 didn't even use the app source code. What they did do was show the environment in which they run on and now by running
-the app image with `CNB_PROCESS_TYPE=sys-info` we can see the runtime information as well.
+the app image with `--entrypoint sys-info` we can see the runtime information as well.
 
 ```bash
-docker run --rm --env CNB_PROCESS_TYPE=sys-info -it my-app
+docker run --rm --entrypoint sys-info -it my-app
 ```
 
 We're sure you'll be able to create more useful builders.
@@ -96,7 +95,12 @@ We're sure you'll be able to create more useful builders.
 
 For additional sample builders and buildpacks, check out our [samples][samples] repo.
 
+You can also check out our reference of the builder config [here][builder-config].
+
+If you would like to customize the stack used by your builder, check out our [Create a stack][create-a-stack] tutorial.
+
 [build]: /docs/concepts/operations/build/
 [builder]: /docs/concepts/components/builder/
 [builder-config]: /docs/reference/builder-config/
+[create-a-stack]: /docs/operator-guide/create-a-stack
 [samples]: https://github.com/buildpacks/samples

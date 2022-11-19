@@ -1,22 +1,24 @@
-[![Build Status](https://travis-ci.org/buildpacks/docs.svg?branch=master)](https://travis-ci.org/buildpacks/docs/branches)
+# Docs for [Cloud Native Buildpacks](https://buildpacks.io)
 
-# docs
-Website for [Cloud Native Buildpacks](https://buildpacks.io)
+[![](https://github.com/buildpacks/docs/workflows/Deploy/badge.svg)](https://github.com/buildpacks/docs/actions)
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/buildpacks/docs)
 
-## Prerequisites
+### Preview
 
-* [Hugo](https://gohugo.io/)
+![buildpacks.io](https://image.thum.io/get/https://buildpacks.io)
 
-## Development
+## Management
 
-Serve docs at http://localhost:1313
+### Calendar
 
-```bash
-make serve
-```
+The calendar is managed via [teamup](https://teamup.com/ksxw26c3km72mq3imn). To request an alteration you may [create an issue](https://github.com/buildpacks/community/issues/new), reach out to a maintainer via [slack](https://slack.cncf.io) in #buildpacks-maintainers, post in [discussions](https://github.com/buildpacks/community/discussions).
 
-## Build
+## Contributing
 
-```bash
-make build
-```
+We ❤ contributions.
+
+To learn more, read the [CONTRIBUTING][contributing], [RELEASE][release] and [DEVELOPMENT][development] documents.
+
+[contributing]: https://github.com/buildpacks/.github/blob/main/CONTRIBUTING.md
+[development]: DEVELOPMENT.md
+[release]: RELEASE.md

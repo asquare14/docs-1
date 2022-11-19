@@ -1,19 +1,24 @@
 +++
 title="An App's Brief Journey from Source to Image"
 weight=2
+getting-started=true
 +++
 
-## `pack` for the journey
+## Pack for the journey
 
 In this tutorial, we'll explain how to use `pack` and **buildpacks** to create a runnable app image from source code.
+<!--+if false+-->
+{{< katacoda-button href="https://katacoda.com/buildpacks/scenarios/app-journey" color="green" >}} Learn on Katacoda {{</>}}
 
-That means you'll need to make sure you have `pack` installed:
-<br/><br/>
-<a href="/docs/install-pack" class="download-button button icon-button bg-pink">Install pack</a><br/>
+In order to run the build process in an isolated fashion, `pack` uses **Docker**. That means you'll need to make sure you have both `docker` and `pack` installed:
 
-> **NOTE:** `pack` is only one implementation of the [Cloud Native Buildpacks Platform Specification][cnb-platform-spec].
+{{< download-button href="https://store.docker.com/search?type=edition&offering=community" color="blue" >}} Install Docker {{</>}}
 
-[cnb-platform-spec]: https://github.com/buildpacks/spec/blob/master/platform.md
+{{< download-button href="/docs/install-pack" color="pink" >}} Install pack {{</>}}
+<!--+end+-->
+> **NOTE:** `pack` is only one implementation of the [Cloud Native Buildpacks Platform Specification][cnb-platform-spec]. Additionally, not all Cloud Native Buildpacks Platforms require Docker.
+
+[cnb-platform-spec]: https://github.com/buildpacks/spec/blob/main/platform.md
 
 ## Buildpack base camp
 
@@ -37,7 +42,7 @@ instance, an **NPM buildpack** might look for a `package.json`, and a **Go build
 
 ### What is a [builder][builder]?
 
-{{< summary "/docs/concepts/components/builder" >}}
+A builder is an image that contains all the components necessary to execute a build. A builder image is created by taking a build image and adding a lifecycle, buildpacks, and files that configure aspects of the build including the buildpack detection order and the location(s) of the run image.
 
 ## Next stop, the end
 
@@ -45,16 +50,24 @@ Let's see all this in action using `pack build`.
 
 Run the following commands in a shell to clone and build this [simple Java app][samples-java-maven].
 
-```bash
-# clone the repo
+1. Clone the samples repo.
+```
 git clone https://github.com/buildpacks/samples
+``` 
+<!--+- "{{execute}}"+-->
 
-# go to the app directory
+2. Go to the Java apps sub-directory
+```
 cd samples/apps/java-maven
+```
+<!--+- "{{execute}}"+-->
 
-# build the app
+3. Build the app using [`pack`][pack-docs]
+```
 pack build myapp --builder cnbs/sample-builder:bionic
 ```
+<!--+- "{{execute}}"+-->
+
 
 > **NOTE:** This is your first time running `pack build` for `myapp`, so you'll notice that
 > **the build might take longer than usual.** Subsequent builds will take advantage of various forms of caching.
@@ -72,18 +85,33 @@ To test out your new app image locally, you can run it with Docker:
 ```bash
 docker run --rm -p 8080:8080 myapp
 ```
+<!--+- "{{execute}}"+-->
+<!--+- if false+-->
+Now hit [`localhost:8080`](http://localhost:8080) in your favorite browser and take a minute to enjoy the view.
+<!--+- end+-->
+<!--+ `
+Now open your favorite browser and point it to port "8080" of your host and take a minute to enjoy the view.
 
-Now hit `localhost:8080` in your favorite browser and take a minute to enjoy the view.
+On Katacoda you can do this by [clicking here](https://[[HOST_SUBDOMAIN]]-8080-[[KATACODA_HOST]].environments.katacoda.com)
+` +-->
 
 ### Take your image to the skies
 
 `pack` uses **buildpacks** to help you easily create OCI images that you can run just about anywhere. Try
 deploying your new image to your favorite cloud!
 
-> In case you need it, `pack build` has a handy flag called `--publish` that will publish your app image to a Docker
-> registry after building it.
+> In case you need it, `pack build` has a handy flag called `--publish` that will build your image directly onto a Docker
+> registry. You can learn more about `pack` features in the [documentation][pack-docs].
 
+## What about Windows apps?
+
+Windows image builds are now supported!
+
+<!--+- if false+-->
+<a href="/docs/app-developer-guide/build-a-windows-app" class="button bg-blue">Windows build guide</a>
+<!--+end+-->
 
 [builder]: /docs/concepts/components/builder/
 [buildpack]: /docs/concepts/components/buildpack/
-[samples-java-maven]: https://github.com/buildpacks/samples/tree/master/apps/java-maven
+[samples-java-maven]: https://github.com/buildpacks/samples/tree/main/apps/java-maven
+[pack-docs]: /docs/tools/pack/

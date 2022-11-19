@@ -1,21 +1,30 @@
 +++
 title="Make your application runnable"
 weight=405
-creatordisplayname = "Scott Sisil"
-creatoremail = "ssisil@pivotal.io"
-lastmodifierdisplayname = "Javier Romero"
-lastmodifieremail = "jromero@pivotal.io"
 +++
 
-To make your app runnable, we need to set a default start command. Add the following to the end of your `build` script:
+<!-- test:suite=create-buildpack;weight=5 -->
 
+To make your app runnable, a default start command must be set. You'll need to add the following to the end of your `build` script:
+
+<!-- file=ruby-buildpack/bin/build data-target=append -->
 ```bash
+# ...
+
 # Set default start command
-echo 'processes = [{ type = "web", command = "bundle exec ruby app.rb"}]' > "$layersdir/launch.toml"
+cat > "$layersdir/launch.toml" << EOL
+[[processes]]
+type = "web"
+command = "bundle exec ruby app.rb"
+default = true
+EOL
+
+# ...
 ```
 
-Your full `build` script should now look like the following:
+Your full `ruby-buildpack/bin/build`<!--+"{{open}}"+--> script should now look like the following:
 
+<!-- test:file=ruby-buildpack/bin/build -->
 ```bash
 #!/usr/bin/env bash
 set -eo pipefail
@@ -25,44 +34,54 @@ echo "---> Ruby Buildpack"
 # 1. GET ARGS
 layersdir=$1
 
-# 2. DOWNLOAD RUBY
-echo "---> Downloading and extracting Ruby"
+# 2. CREATE THE LAYER DIRECTORY
 rubylayer="$layersdir"/ruby
 mkdir -p "$rubylayer"
+
+# 3. DOWNLOAD RUBY
+echo "---> Downloading and extracting Ruby"
 ruby_url=https://s3-external-1.amazonaws.com/heroku-buildpack-ruby/heroku-18/ruby-2.5.1.tgz
 wget -q -O - "$ruby_url" | tar -xzf - -C "$rubylayer"
 
-# 3. MAKE RUBY AVAILABLE DURING LAUNCH
-echo -e 'launch = true' > "$rubylayer.toml"
+# 4. MAKE RUBY AVAILABLE DURING LAUNCH
+echo -e '[types]\nlaunch = true' > "$layersdir/ruby.toml"
 
-# 4. MAKE RUBY AVAILABLE TO THIS SCRIPT
+# 5. MAKE RUBY AVAILABLE TO THIS SCRIPT
 export PATH="$rubylayer"/bin:$PATH
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH:+${LD_LIBRARY_PATH}:}"$rubylayer/lib"
 
-# 5. INSTALL BUNDLER
+# 6. INSTALL BUNDLER
 echo "---> Installing bundler"
 gem install bundler --no-ri --no-rdoc
 
-# 6. INSTALL GEMS
+# 7. INSTALL GEMS
 echo "---> Installing gems"
 bundle install
 
 # ========== ADDED ===========
-# 7. SET DEFAULT START COMMAND
-echo 'processes = [{ type = "web", command = "bundle exec ruby app.rb"}]' > "$layersdir/launch.toml"
+# 8. SET DEFAULT START COMMAND
+cat > "$layersdir/launch.toml" << EOL
+[[processes]]
+type = "web"
+command = "bundle exec ruby app.rb"
+default = true
+EOL
 ```
 
 Then rebuild your app using the updated buildpack:
 
+<!-- test:exec -->
 ```bash
-pack build test-ruby-app --path ~/workspace/ruby-sample-app --buildpack ~/workspace/ruby-cnb
+pack build test-ruby-app --path ./ruby-sample-app --buildpack ./ruby-buildpack
 ```
+<!--+- "{{execute}}"+-->
 
 You should then be able to run your new Ruby app:
- 
+
 ```bash
 docker run --rm -p 8080:8080 test-ruby-app
 ```
+<!--+- "{{execute}}"+-->
 
 and see the server log output:
 
@@ -75,6 +94,10 @@ and see the server log output:
 
 Test it out by navigating to [localhost:8080](http://localhost:8080) in your favorite browser!
 
+We can add multiple process types to a single app. We'll do that in the next section.
+
+<!--+if false+-->
 ---
 
-<a href="/docs/buildpack-author-guide/create-buildpack/caching" class="button bg-pink">Next Step</a>
+<a href="/docs/buildpack-author-guide/create-buildpack/specify-multiple-process-types" class="button bg-pink">Next Step</a>
+<!--+end+-->
